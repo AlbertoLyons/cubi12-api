@@ -4,33 +4,16 @@ using Cubitwelve.Src.Middlewares;
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 var builder = WebApplication.CreateBuilder(args);
-var localAllowSpecificOrigins = "_localAllowSpecificOrigins";
-var deployedAllowSpecificOrigins = "_deployedAllowSpecificOrigins";
+var allowAllOrigins = "_allowAllOrigins";
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: localAllowSpecificOrigins,
+    options.AddPolicy(name: allowAllOrigins,
                       policy =>
                       {
-                          policy.AllowAnyHeader()
-                                .AllowAnyMethod()
-                                .AllowCredentials()
-                                .WithOrigins("http://localhost:3000",
-                                            "http://localhost:8100",
-                                            "http://localhost");
-                      });
-    options.AddPolicy(name: deployedAllowSpecificOrigins,
-                      policy =>
-                      {
-                          policy.AllowAnyHeader()
-                                .AllowAnyMethod()
-                                .AllowCredentials()
-                                .WithOrigins("https://cubi12.azurewebsites.net",
-                                            "https://cubi12.cl",
-                                            "https://www.cubi12.cl",
-                                            "https://cubi12-frontend-latest.onrender.com",
-                                            "https://cubi12-frontend.onrender.com"
-                                            );
+                          policy.AllowAnyOrigin()
+                                .AllowAnyHeader()
+                                .AllowAnyMethod();
                       });
 });
 
@@ -58,12 +41,10 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    app.UseCors(localAllowSpecificOrigins);
 }
-else
-{
-    app.UseCors(deployedAllowSpecificOrigins);
-}
+
+app.UseCors(allowAllOrigins);
+
 
 app.UseAuthentication();
 app.UseAuthorization();
