@@ -53,7 +53,6 @@ namespace Cubitwelve.Src.Extensions
         private static void AddDbContext(IServiceCollection services)
         {
             var connectionUrl = Env.GetString("DB_CONNECTION");
-
             services.AddDbContext<DataContext>(options =>
             {
                 options.UseNpgsql(
