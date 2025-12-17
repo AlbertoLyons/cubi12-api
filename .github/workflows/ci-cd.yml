@@ -1,0 +1,41 @@
+name: ci-cd
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  CI:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up ASP.NET 7.0
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '7.0.x'
+    - name: Restore dependencies
+      run: dotnet restore Cubitwelve.sln
+    - name: Build
+      run: dotnet build Cubitwelve.sln
+    - name: Login to Docker Hub
+      run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+    - name: Docker Build
+      run: docker build -t cubitwelve-app -f Cubitwelve/Dockerfile .
+    - name: Docker Tag
+      run: docker tag cubitwelve-app albertolyonsz/cubitwelve-app
+    - name: Docker push
+      run: docker push albertolyonsz/cubitwelve-app
+  CD:
+    needs: CI
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Deploy to Render
+      run: curl -X POST "${{ secrets.DEPLOY_WEBHOOK }}"
+
