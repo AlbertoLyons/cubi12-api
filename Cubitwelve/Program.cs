@@ -1,6 +1,8 @@
 using Cubitwelve.Src.Extensions;
 using Cubitwelve.Src.Middlewares;
 
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
 var builder = WebApplication.CreateBuilder(args);
 var localAllowSpecificOrigins = "_localAllowSpecificOrigins";
 var deployedAllowSpecificOrigins = "_deployedAllowSpecificOrigins";
@@ -42,6 +44,7 @@ builder.Services.AddOutputCache(options =>
 });
 
 var app = builder.Build();
+
 app.UseOutputCache();
 
 
