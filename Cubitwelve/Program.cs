@@ -30,6 +30,9 @@ builder.Services.AddOutputCache(options =>
 
 var app = builder.Build();
 
+app.UseCors(allowAllOrigins);
+
+
 app.UseOutputCache();
 
 app.UseHttpsRedirection();
@@ -42,9 +45,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseCors(allowAllOrigins);
-
 
 app.UseAuthentication();
 app.UseAuthorization();
