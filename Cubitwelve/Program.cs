@@ -28,7 +28,8 @@ builder.Services.AddCors(options =>
                                 .WithOrigins("https://cubi12.azurewebsites.net",
                                             "https://cubi12.cl",
                                             "https://www.cubi12.cl",
-                                            "https://cubi12-frontend-latest.onrender.com"
+                                            "https://cubi12-frontend-latest.onrender.com",
+                                            "https://cubi12-frontend.onrender.com"
                                             );
                       });
 });
@@ -48,6 +49,7 @@ var app = builder.Build();
 
 app.UseOutputCache();
 
+app.UseHttpsRedirection();
 
 // Because it's the first middleware, it will catch all exceptions
 app.UseExceptionHandling();
@@ -68,7 +70,6 @@ app.UseAuthorization();
 
 // app.UseIsUserEnabled();
 
-app.UseHttpsRedirection();
 
 app.MapControllers();
 
